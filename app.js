@@ -1,9 +1,3 @@
-/* ***********************
-* Objetivo: API para o uso das funcções.
-* Data: 1/12/2024  
-* Autor: Gustavo Deodato 
-* ************************/
-
 /* Para criar uma API devemos instalar: 
 
      express         npm install express --save          - Serve para criar a API
@@ -39,7 +33,7 @@ var funcoes = require('./modulo/funcao.js')
 //Iniciando os end-point 
 //1 - end-point que retorna a lista de cursos existentes 
 app.get('/v1/lion-school/cursos', cors(), async function(request, response){
-   let dados = funcoes.getListadeCursos() 
+   let dados = funcoes.getListaCursos() 
 
    response.status(200)
    response.json(dados)
@@ -55,11 +49,51 @@ app.get('/v1/lion-school/cursos', cors(), async function(request, response){
 
 })
 
+//6. end-point qe retorna filtro por reprovado aprovado ou exame 
+app.get('/v1/lion-school/alunos/filtro', (request, response) => {
+    const sigla = request.query.sigla
+    const alunos = funcoes.getFiltroStatusDePermanencia(sigla)
+
+    console.log(alunos)
+
+    if (alunos) {
+        response.json(alunos);
+    } else {
+        response.status(404).json({ error: 'Nenhum aluno encontrado para este curso.' })
+    }
+})
+
+// 5 - end-point que retorna alunos por status 
+app.get('/v1/lion-school/alunos/filtro', cors (), async function (request, response) {
+    let status = request.query.status
+    let dados = funcoes.getFiltroStatus(status)
+
+    if(dados){    
+        response.status(200)
+        response.json(dados)
+        }else{
+            response.status(404)
+            response.json({'status': 404, 'message': 'Não foi encontrado um aluno.5'})
+        }
+})
+
+
+
+//7. end-point que retorna filtro por alunos por curso e ano de conclusão
+app.get('/v1/lion-school/alunos/:filtro', (req, res) => {
+    const { curso, anoConclusao } = req.query
+    const dados = funcoes.getFiltroCursoEAno(curso, anoConclusao)
+    if (dados) {
+        res.json(dados)
+    } else {
+        res.status(404).json({ error: 'Nenhum aluno encontrado para este curso e ano.' })
+    }
+})
 
 // 3 - end-point que retorna um filtro com base na matricula dos alunos 
 app.get('/v1/lion-school/alunos/:matricula', cors (), async function (request, response) {
     let matricula = request.params.matricula
-    let dados = funcoes.getMatricula(matricula)
+    let dados = funcoes.getMatriculaAluno(matricula)
 
     if(dados){    
     response.status(200)
@@ -84,42 +118,7 @@ app.get('/v1/lion-school/alunos/cursos/:sigla', cors (), async function (request
         }
 })
 
-// 5 - end-point que retorna alunos por status 
-app.get('/v1/lion-school/alunos/filtro', cors (), async function (request, response) {
-    let status = request.query.status
-    let dados = funcoes.getFiltroStatus(status)
 
-    if(dados){    
-        response.status(200)
-        response.json(dados)
-        }else{
-            response.status(404)
-            response.json({'status': 404, 'message': 'Não foi encontrado um aluno.5'})
-        }
-})
-
-
-//6. end-point qe retorna filtro por reprovado aprovado ou exame 
-app.get('/v1/lion-school/alunos/:filtro', (req, res) => {
-    const sigla = req.query.sigla
-    const alunos = funcoes.getFiltroResultado(sigla)
-    if (alunos) {
-        res.json(alunos);
-    } else {
-        res.status(404).json({ error: 'Nenhum aluno encontrado para este curso.' })
-    }
-})
-
-//7. end-point que retorna filtro por alunos por curso e ano de conclusão
-app.get('/v1/lion-school/alunos/:filtro', (req, res) => {
-    const { sigla, ano } = req.query
-    const dados = funcoes.getFiltroAnoCurso(sigla, ano)
-    if (dados) {
-        res.json(dados)
-    } else {
-        res.status(404).json({ error: 'Nenhum aluno encontrado para este curso e ano.' })
-    }
-})
 
 app.listen('8080', function(){
     console.log('API funcionando e aguardando requisições..')

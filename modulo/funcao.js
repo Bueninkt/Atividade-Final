@@ -114,7 +114,7 @@ const getFiltroStatus = function (statusFiltro) {
             })
         }
     })
-    if(status === true){
+    if(status == true){
         return alunosFiltrados
     }else{
         return status
@@ -125,6 +125,8 @@ const getFiltroStatus = function (statusFiltro) {
 //Filtro alunos por curso e aprovado reprovado ou em exame
 
 const getFiltroStatusDePermanencia = function (alsigla) {
+
+    console.log(alsigla)
     let argumento = String(alsigla).toUpperCase()
     let listar = listaDealunos
     let resultado = []
@@ -177,9 +179,6 @@ const getFiltroStatusDePermanencia = function (alsigla) {
     }
 }
 
-//console.log(getFiltroResultado('ds', 'aprovado'))
-
-
 //Filtro por ano e cursos 
 
 const getFiltroCursoEAno = function (siglaCurso, anoConclusao) {
@@ -210,6 +209,8 @@ const getFiltroCursoEAno = function (siglaCurso, anoConclusao) {
     }
 }
 //console.log(getFiltroAnoCurso('ds', '2022'))
+//console.log(getFiltroStatus('Finalizado'))
+console.log(getFiltroStatusDePermanencia('DS'))
 module.exports = {
     getListaCursos,
     getListaAlunos,
